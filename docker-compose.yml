@@ -1,0 +1,31 @@
+version: '3.8'
+
+volumes:
+  postgres_data:
+
+services:
+  bot:
+    build:
+      context: .
+      dockerfile: compose/aiogram/Dockerfile
+    volumes:
+      - .:/bot:cached
+    container_name: aiogram-bot
+    ports:
+      - 81:80
+    depends_on:
+      - postgres
+    env_file:
+      - .envs/.aiogram
+      - .envs/.postgres
+
+  postgres:
+    build:
+      context: .
+      dockerfile: compose/postgres/Dockerfile
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    container_name: bot-db
+    hostname: postgres
+    env_file:
+      - .envs/.postgres
